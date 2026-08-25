@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: storemesh
+  namespace: argocd
+spec:
+  description: Storemesh
+
+  sourceRepos:
+    - "https://github.com/sartim/storemesh-helm-repo"
+
+  destinations:
+    - namespace: "storemesh-user-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-product-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-order-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-payment-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-inventory-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-cart-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-notification-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-recommendation-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-chat-service"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-graphql"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-frontend"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-kafka"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-monitoring"
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: "networking.istio.io"
+      kind: "*"
+    - group: "security.istio.io"
+      kind: "*"
+
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  roles:
+    - name: developer
+      description: Read-only access for developers
+      policies:
+        - p, proj:storemesh:developer, applications, get, storemesh/*, allow
+      groups:
+        - developers

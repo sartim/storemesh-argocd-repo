@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storemesh-user-service
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: storemesh
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io   # deletes k8s resources on app delete
+spec:
+  project: storemesh
+
+  source:
+    repoURL: https://github.com/sartim/storemesh-helm-repo
+    targetRevision: main
+    path: storemesh-user-service
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: secrets.existingSecret
+          value: storemesh-user-service-secrets
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-user-service
+
+  syncPolicy:
+    automated:
+      prune: true       # remove resources no longer in Helm chart
+      selfHeal: true    # revert manual kubectl changes automatically
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+
+  # health check — ArgoCD waits for Deployment to be Ready before marking Synced
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas   # ignore replicas — HPA manages this
