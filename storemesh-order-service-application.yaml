@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storemesh-order-service
+  namespace: argocd
+spec:
+  project: storemesh
+  source:
+    repoURL: https://github.com/sartim/storemesh-helm-repo
+    targetRevision: main
+    path: storemesh-order-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-order-service
+  syncPolicy:
+    automated: {prune: true, selfHeal: true}
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]
