@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storemesh-product-service
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: storemesh
+spec:
+  project: storemesh
+  source:
+    repoURL: https://github.com/sartim/storemesh-helm-repo
+    targetRevision: main
+    path: storemesh-product-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-product-service
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
