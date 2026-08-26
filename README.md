@@ -83,3 +83,9 @@ Istio is represented by separate, opt-in `base` and `istiod` applications,
 pinned to `1.30.3`. These install the mesh control plane only; sidecar
 injection, gateways, mTLS policy, and telemetry providers require a separate
 environment review before workloads are enrolled.
+
+`examples/istio-mesh-policy.yaml` is a non-applied migration template. Start
+with `PERMISSIVE` mode while sidecars and the Tempo provider are validated,
+then promote to `STRICT` in an environment-specific policy after approved
+workloads are enrolled. Repeat the policy for each namespace deliberately;
+there is no cluster-wide enrollment in this repository.
