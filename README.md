@@ -32,3 +32,15 @@ the ingress class used by the environment. Apply it only after DNS points the
 User Service hostname at the ingress controller. The template is deliberately
 not included in the Argo application sync set because its values are
 environment-specific.
+
+The ECK operator is also an explicitly applied, opt-in application. It is
+pinned to ECK `3.4.1` and installs the Elasticsearch/Kibana custom resource
+definitions; it does not create a logging cluster by itself:
+
+```sh
+kubectl apply -f eck-operator-application.yaml
+```
+
+Declare environment-specific Elasticsearch and Kibana resources only after
+the operator is healthy. Configure persistent storage, retention, credentials,
+network policy, and backups before sending production logs.
