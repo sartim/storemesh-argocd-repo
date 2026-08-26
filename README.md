@@ -78,3 +78,8 @@ pipeline template. Replace the ECK service hostname and inject credentials from
 an ExternalSecret-backed Kubernetes Secret before enabling the Fluent Bit
 chart. The filters remove common password, token, and authorization fields;
 extend the redaction policy for application-specific sensitive fields.
+
+Istio is represented by separate, opt-in `base` and `istiod` applications,
+pinned to `1.30.3`. These install the mesh control plane only; sidecar
+injection, gateways, mTLS policy, and telemetry providers require a separate
+environment review before workloads are enrolled.
