@@ -1,0 +1,21 @@
+# Template only. Apply after the target namespaces are enrolled in the mesh
+# and the Tempo provider has been configured in Istio meshConfig.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-mtls
+  namespace: storemesh-user-service
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: storemesh-tracing
+  namespace: storemesh-user-service
+spec:
+  tracing:
+  - providers:
+    - name: tempo
+    randomSamplingPercentage: 10.0
