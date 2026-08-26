@@ -18,7 +18,7 @@ jobs:
     - name: Parse YAML
       shell: bash
       run: |
-        ruby -e 'require "yaml"; ARGV.each { |file| YAML.load_stream(File.read(file), aliases: true); puts "ok #{file}" }' \
+        ruby -e 'require "yaml"; ARGV.each { |file| YAML.load_stream(File.read(file)); puts "ok #{file}" }' \
           $(find . -type f \( -name "*.yaml" -o -name "*.yml" \) -not -path "./.git/*")
     - name: Check whitespace
       run: git diff --check
