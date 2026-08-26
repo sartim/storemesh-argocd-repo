@@ -14,3 +14,14 @@ Apply the project and application after Argo CD is installed:
 kubectl apply -f project.yaml
 kubectl apply -f storemesh-user-service-application.yaml
 ```
+
+The cert-manager application is intentionally separate and should be enabled
+only in environments with an ingress controller and an approved certificate
+issuance policy:
+
+```sh
+kubectl apply -f cert-manager-application.yaml
+```
+
+It tracks the official Jetstack OCI chart at a pinned version and manages the
+cert-manager CRDs through Argo CD.
