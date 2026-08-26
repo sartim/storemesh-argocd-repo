@@ -25,3 +25,10 @@ kubectl apply -f cert-manager-application.yaml
 
 It tracks the official Jetstack OCI chart at a pinned version and manages the
 cert-manager CRDs through Argo CD.
+
+After cert-manager is healthy, copy and customize
+`examples/letsencrypt-clusterissuer.yaml` with a real ACME account email and
+the ingress class used by the environment. Apply it only after DNS points the
+User Service hostname at the ingress controller. The template is deliberately
+not included in the Argo application sync set because its values are
+environment-specific.
