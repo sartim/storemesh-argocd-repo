@@ -61,3 +61,14 @@ It installs Prometheus, Grafana, Alertmanager, and their CRDs in the
 `storemesh-monitoring` namespace. Configure persistent storage, ingress,
 authentication, and resource limits in an environment overlay before enabling
 it for production.
+
+The Tempo trace backend is an explicitly applied, opt-in application using the
+maintained Grafana Community `tempo` chart pinned to `2.3.0`:
+
+```sh
+kubectl apply -f tempo-application.yaml
+```
+
+It exposes OTLP gRPC and HTTP receivers internally and uses a persistent local
+volume by default. Production environments should replace the storage backend,
+retention, sizing, and access policy with approved environment values.

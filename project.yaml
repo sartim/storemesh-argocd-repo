@@ -11,6 +11,7 @@ spec:
     - "quay.io/jetstack/charts"
     - "https://helm.elastic.co"
     - "https://prometheus-community.github.io/helm-charts"
+    - "https://grafana-community.github.io/helm-charts"
 
   destinations:
     - namespace: "storemesh-user-service"
