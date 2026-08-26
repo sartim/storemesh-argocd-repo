@@ -1,0 +1,33 @@
+# Template only. These values are consumed by the official Fluent Bit chart
+# after ECK Elasticsearch/Kibana and the logging secret are approved.
+config:
+  filters: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+    [FILTER]
+        Name modify
+        Match kube.*
+        Remove log.password
+        Remove log.token
+        Remove log.authorization
+  outputs: |
+    [OUTPUT]
+        Name es
+        Match kube.*
+        Host <eck-elasticsearch-service>
+        Port 9200
+        TLS On
+        TLS.Verify On
+        HTTP_User ${ELASTIC_USERNAME}
+        HTTP_Passwd ${ELASTIC_PASSWORD}
+        Logstash_Format On
+        Retry_Limit False
+
+# Inject ELASTIC_USERNAME and ELASTIC_PASSWORD from an ExternalSecret-backed
+# Kubernetes Secret through the chart's env values. Never commit credentials.
+env: []
