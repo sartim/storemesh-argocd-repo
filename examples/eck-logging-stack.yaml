@@ -1,0 +1,56 @@
+# Template only: replace the version and storage class for the target
+# environment before applying. This file is intentionally not an Argo sync
+# resource and is not used by the local Kind bootstrap.
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: storemesh-logs
+  namespace: storemesh-monitoring
+spec:
+  version: <elastic-stack-version>
+  nodeSets:
+  - name: default
+    count: 1
+    config:
+      node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: <storage-class>
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: storemesh-logs
+  namespace: storemesh-monitoring
+spec:
+  version: <elastic-stack-version>
+  count: 1
+  elasticsearchRef:
+    name: storemesh-logs
+  podTemplate:
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            memory: 1Gi
