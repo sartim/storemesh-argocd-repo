@@ -44,3 +44,8 @@ kubectl apply -f eck-operator-application.yaml
 Declare environment-specific Elasticsearch and Kibana resources only after
 the operator is healthy. Configure persistent storage, retention, credentials,
 network policy, and backups before sending production logs.
+
+`examples/eck-logging-stack.yaml` is a deliberately non-applied starting
+template. Replace its Elastic Stack version and storage class, then review
+replica sizing, retention, TLS, and backup settings for the target environment
+before applying it.
