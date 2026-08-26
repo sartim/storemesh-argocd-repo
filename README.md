@@ -72,3 +72,9 @@ kubectl apply -f tempo-application.yaml
 It exposes OTLP gRPC and HTTP receivers internally and uses a persistent local
 volume by default. Production environments should replace the storage backend,
 retention, sizing, and access policy with approved environment values.
+
+`examples/fluent-bit-eck-values.yaml` provides the non-applied Fluent Bit
+pipeline template. Replace the ECK service hostname and inject credentials from
+an ExternalSecret-backed Kubernetes Secret before enabling the Fluent Bit
+chart. The filters remove common password, token, and authorization fields;
+extend the redaction policy for application-specific sensitive fields.
