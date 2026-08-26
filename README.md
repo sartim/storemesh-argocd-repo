@@ -3,6 +3,10 @@
 This repository contains the Argo CD `AppProject` and application definitions
 for StoreMesh.
 
+Pull requests run manifest CI that parses every YAML document and checks for
+whitespace errors. Kubernetes schema validation remains environment-specific
+because several examples intentionally contain placeholders and require CRDs.
+
 The user-service application deploys the chart from
 `sartim/storemesh-helm-repo`. Runtime credentials are supplied through the
 `storemesh-user-service-secrets` Kubernetes Secret; no secret values belong in
