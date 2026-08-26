@@ -10,6 +10,7 @@ spec:
     - "https://github.com/sartim/storemesh-helm-repo"
     - "quay.io/jetstack/charts"
     - "https://helm.elastic.co"
+    - "https://prometheus-community.github.io/helm-charts"
 
   destinations:
     - namespace: "storemesh-user-service"

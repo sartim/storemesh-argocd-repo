@@ -49,3 +49,15 @@ network policy, and backups before sending production logs.
 template. Replace its Elastic Stack version and storage class, then review
 replica sizing, retention, TLS, and backup settings for the target environment
 before applying it.
+
+The Prometheus Operator-compatible stack is an explicitly applied, opt-in
+application pinned to `kube-prometheus-stack` `88.5.4`:
+
+```sh
+kubectl apply -f prometheus-stack-application.yaml
+```
+
+It installs Prometheus, Grafana, Alertmanager, and their CRDs in the
+`storemesh-monitoring` namespace. Configure persistent storage, ingress,
+authentication, and resource limits in an environment overlay before enabling
+it for production.
