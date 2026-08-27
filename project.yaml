@@ -63,8 +63,6 @@ spec:
       kind: "ValidatingWebhookConfiguration"
     - group: "admissionregistration.k8s.io"
       kind: "MutatingWebhookConfiguration"
-    - group: "admissionregistration.k8s.io"
-      kind: "MutatingWebhookConfiguration"
     - group: "rbac.authorization.k8s.io"
       kind: "ClusterRole"
     - group: "rbac.authorization.k8s.io"
