@@ -63,6 +63,11 @@ jobs:
             storemesh-[a-z0-9-]*) ;;
             *) echo "Application must use the storemesh-* naming convention" >&2; exit 1 ;;
           esac
+          case "${{ inputs.environment }}:$APPLICATION" in
+            staging:storemesh-staging-*) ;;
+            production:storemesh-production-*) ;;
+            *) echo "Application does not belong to the selected environment" >&2; exit 1 ;;
+          esac
           if [ "${{ inputs.environment }}" = "production" ] && [ -z "$REVISION" ]; then
             echo "Production deployments require an immutable source revision" >&2
             exit 1
