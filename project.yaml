@@ -37,6 +37,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: "storemesh-frontend"
       server: https://kubernetes.default.svc
+    - namespace: "storemesh-bff"
+      server: https://kubernetes.default.svc
     - namespace: "storemesh-kafka"
       server: https://kubernetes.default.svc
     - namespace: "storemesh-monitoring"
