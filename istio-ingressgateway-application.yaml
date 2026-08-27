@@ -18,6 +18,8 @@ spec:
         global:
           hub: docker.io/istio
           tag: 1.30.3
+        autoscaling:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-ingress
