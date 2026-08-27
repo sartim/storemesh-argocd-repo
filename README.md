@@ -20,9 +20,10 @@ kubectl apply -f storemesh-user-service-application.yaml
 ```
 
 Deployments are manually triggered from the `Deploy with Argo CD` GitHub
-Actions workflow. Configure `ARGOCD_SERVER` and `ARGOCD_AUTH_TOKEN` as secrets
-on both the `staging` and `production` GitHub Environments. Require reviewers
-on the `production` Environment. The workflow accepts an Argo application name
+Actions workflow. Configure the shared Argo CD endpoint as the repository
+variable `ARGOCD_SERVER`, then configure a separate `ARGOCD_AUTH_TOKEN` secret
+on each GitHub Environment (`staging` and `production`). Require reviewers on
+the `production` Environment. The workflow accepts an Argo application name
 and an optional immutable source revision, then waits for Argo CD sync and
 health before succeeding. It does not use direct `kubectl` deployment access.
 

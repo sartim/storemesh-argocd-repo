@@ -42,7 +42,7 @@ jobs:
 
       - name: Log in to Argo CD
         env:
-          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
           ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         run: |
           test -n "$ARGOCD_SERVER" || { echo "ARGOCD_SERVER is required" >&2; exit 1; }
