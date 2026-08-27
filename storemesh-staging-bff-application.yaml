@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storemesh-staging-bff
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: storemesh
+    storemesh.io/environment: staging
+spec:
+  project: storemesh
+  source:
+    repoURL: https://github.com/sartim/storemesh-helm-repo
+    targetRevision: main
+    path: storemesh-bff
+    helm:
+      values: |
+        nameOverride: storemesh-staging-bff
+        networkPolicy:
+          allowedIngressNamespaces:
+            - storemesh-staging-frontend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-staging-bff
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
