@@ -25,7 +25,9 @@ variable `ARGOCD_SERVER`, then configure a separate `ARGOCD_AUTH_TOKEN` secret
 on each GitHub Environment (`staging` and `production`). Require reviewers on
 the `production` Environment. The workflow accepts an Argo application name
 and an optional immutable source revision, then waits for Argo CD sync and
-health before succeeding. It does not use direct `kubectl` deployment access.
+health before succeeding. Production deployments must provide an immutable
+source revision, and deployments are serialized per environment. It does not
+use direct `kubectl` deployment access.
 
 The cert-manager application is intentionally separate and should be enabled
 only in environments with an ingress controller and an approved certificate

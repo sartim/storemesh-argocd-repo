@@ -28,6 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     timeout-minutes: 15
+    concurrency:
+      group: storemesh-deploy-${{ inputs.environment }}
+      cancel-in-progress: false
 
     steps:
       - name: Install Argo CD CLI
@@ -57,9 +60,13 @@ jobs:
           REVISION: ${{ inputs.revision }}
         run: |
           case "$APPLICATION" in
-            storemesh-*) ;;
+            storemesh-[a-z0-9-]*) ;;
             *) echo "Application must use the storemesh-* naming convention" >&2; exit 1 ;;
           esac
+          if [ "${{ inputs.environment }}" = "production" ] && [ -z "$REVISION" ]; then
+            echo "Production deployments require an immutable source revision" >&2
+            exit 1
+          fi
 
           args=(app sync "$APPLICATION" --prune --async)
           if [ -n "$REVISION" ]; then
