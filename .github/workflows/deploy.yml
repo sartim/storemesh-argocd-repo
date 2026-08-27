@@ -1,0 +1,73 @@
+name: Deploy with Argo CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: GitHub deployment environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      application:
+        description: Argo CD application name
+        required: true
+        type: string
+      revision:
+        description: Optional source revision override for this sync
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.application }} to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 15
+
+    steps:
+      - name: Install Argo CD CLI
+        env:
+          ARGOCD_VERSION: v2.14.12
+        run: |
+          curl --fail --location --silent --show-error \
+            "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" \
+            --output "$RUNNER_TEMP/argocd"
+          chmod +x "$RUNNER_TEMP/argocd"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Log in to Argo CD
+        env:
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        run: |
+          test -n "$ARGOCD_SERVER" || { echo "ARGOCD_SERVER is required" >&2; exit 1; }
+          test -n "$ARGOCD_AUTH_TOKEN" || { echo "ARGOCD_AUTH_TOKEN is required" >&2; exit 1; }
+          argocd login "$ARGOCD_SERVER" \
+            --auth-token "$ARGOCD_AUTH_TOKEN" \
+            --grpc-web
+
+      - name: Sync application
+        env:
+          APPLICATION: ${{ inputs.application }}
+          REVISION: ${{ inputs.revision }}
+        run: |
+          case "$APPLICATION" in
+            storemesh-*) ;;
+            *) echo "Application must use the storemesh-* naming convention" >&2; exit 1 ;;
+          esac
+
+          args=(app sync "$APPLICATION" --prune --async)
+          if [ -n "$REVISION" ]; then
+            args+=(--revision "$REVISION")
+          fi
+          argocd "${args[@]}"
+
+      - name: Wait for healthy application
+        env:
+          APPLICATION: ${{ inputs.application }}
+        run: argocd app wait "$APPLICATION" --sync --health --timeout 600
