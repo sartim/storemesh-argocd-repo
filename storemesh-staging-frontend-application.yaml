@@ -15,6 +15,10 @@ spec:
     helm:
       values: |
         nameOverride: storemesh-staging-frontend
+        image:
+          repository: storemesh-frontend
+          tag: 0.1.2-staging
+          pullPolicy: IfNotPresent
         istio:
           host: staging.storemesh.local
   destination:
