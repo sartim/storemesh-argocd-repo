@@ -47,6 +47,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: "istio-system"
       server: https://kubernetes.default.svc
+    - namespace: "istio-ingress"
+      server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
     - group: ""
@@ -59,6 +61,10 @@ spec:
       kind: "CustomResourceDefinition"
     - group: "admissionregistration.k8s.io"
       kind: "ValidatingWebhookConfiguration"
+    - group: "admissionregistration.k8s.io"
+      kind: "MutatingWebhookConfiguration"
+    - group: "admissionregistration.k8s.io"
+      kind: "MutatingWebhookConfiguration"
     - group: "rbac.authorization.k8s.io"
       kind: "ClusterRole"
     - group: "rbac.authorization.k8s.io"
