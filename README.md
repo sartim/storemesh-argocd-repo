@@ -19,15 +19,10 @@ kubectl apply -f project.yaml
 kubectl apply -f storemesh-user-service-application.yaml
 ```
 
-Deployments are manually triggered from the `Deploy with Argo CD` GitHub
-Actions workflow. Configure the shared Argo CD endpoint as the repository
-variable `ARGOCD_SERVER`, then configure a separate `ARGOCD_AUTH_TOKEN` secret
-on each GitHub Environment (`staging` and `production`). Require reviewers on
-the `production` Environment. The workflow accepts an Argo application name
-and an optional immutable source revision, then waits for Argo CD sync and
-health before succeeding. Production deployments must provide an immutable
-source revision, and deployments are serialized per environment. It does not
-use direct `kubectl` deployment access.
+Argo CD application manifests are retained for a future GitOps deployment
+model, but they are not the active deployment path until a reachable Argo CD
+server is available. The current manual deployment workflow is in the Helm
+repository and runs `helm upgrade --install` from GitHub Actions.
 
 The cert-manager application is intentionally separate and should be enabled
 only in environments with an ingress controller and an approved certificate
