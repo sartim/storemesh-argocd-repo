@@ -24,6 +24,18 @@ spec:
           prometheusSpec:
             retention: 7d
             serviceMonitorSelectorNilUsesHelmValues: false
+        # StoreMesh keeps the Argo project boundary explicit and does not
+        # permit an observability app to create services in kube-system.
+        kubeEtcd:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubeProxy:
+          enabled: false
+        coreDns:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: storemesh-monitoring
