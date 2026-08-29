@@ -20,6 +20,9 @@ spec:
       parameters:
         - name: secrets.existingSecret
           value: storemesh-user-service-secrets
+      values: |
+        serviceMonitor:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc

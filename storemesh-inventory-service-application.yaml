@@ -9,6 +9,10 @@ spec:
     repoURL: https://github.com/sartim/storemesh-helm-repo
     targetRevision: main
     path: storemesh-inventory-service
+    helm:
+      values: |
+        serviceMonitor:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: storemesh-inventory-service
