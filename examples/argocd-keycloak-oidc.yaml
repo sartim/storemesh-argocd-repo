@@ -1,0 +1,27 @@
+# Non-applied example. Apply only after the Keycloak issuer is reachable from
+# the Argo CD server and the Secret has been created in namespace argocd.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-secret
+  namespace: argocd
+type: Opaque
+stringData:
+  oidc.keycloak.clientSecret: CHANGE_ME_OUT_OF_BAND
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  url: https://localhost:8443
+  oidc.config: |
+    name: Keycloak
+    issuer: http://localhost:8081/realms/storemesh
+    clientID: argocd
+    clientSecret: $oidc.keycloak.clientSecret
+    requestedScopes: ["openid", "profile", "email", "groups"]
+    requestedIDTokenClaims:
+      groups:
+        essential: true

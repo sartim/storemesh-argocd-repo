@@ -1,0 +1,21 @@
+# Non-applied example. Merge into prometheus-stack-application.yaml only after
+# creating the Secret in the storemesh-monitoring namespace.
+grafana:
+  grafana.ini:
+    server:
+      root_url: http://localhost:3001/
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak
+      allow_sign_up: false
+      client_id: grafana
+      scopes: openid profile email groups
+      auth_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/auth
+      token_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/token
+      api_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/userinfo
+      role_attribute_path: contains(groups[*], 'observability-admin') && 'Admin' || 'Viewer'
+  envFromSecret: storemesh-grafana-keycloak
+
+# Create the referenced Secret out of band. Never commit its value:
+# kubectl -n storemesh-monitoring create secret generic storemesh-grafana-keycloak \
+#   --from-literal=client_secret="$GRAFANA_KEYCLOAK_CLIENT_SECRET"

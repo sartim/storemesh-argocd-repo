@@ -71,6 +71,15 @@ Kiali is installed through its operator application and is configured for
 anonymous local access only. It observes Istio and Prometheus and should be
 protected with an approved authentication strategy outside local testing.
 
+Non-applied OIDC examples for Grafana and Argo CD are in
+`examples/grafana-keycloak-values.yaml` and
+`examples/argocd-keycloak-oidc.yaml`. They intentionally use placeholders and
+must be adapted for the environment: create confidential-client Secrets out
+of band, use an issuer reachable by the server, register exact HTTPS callback
+URLs in Keycloak, and verify group-to-role mappings before removing local
+fallback access. Kiali and Kibana require the same explicit tool-specific
+activation process.
+
 The Prometheus Operator-compatible stack is an explicitly applied, opt-in
 application pinned to `kube-prometheus-stack` `88.5.4`:
 
