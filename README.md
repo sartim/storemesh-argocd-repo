@@ -122,3 +122,5 @@ with `PERMISSIVE` mode while sidecars and the Tempo provider are validated,
 then promote to `STRICT` in an environment-specific policy after approved
 workloads are enrolled. Repeat the policy for each namespace deliberately;
 there is no cluster-wide enrollment in this repository.
+The `examples/istio-strict-grpc-policy.yaml` file is the corresponding
+non-applied promotion template for the four domain-service namespaces.

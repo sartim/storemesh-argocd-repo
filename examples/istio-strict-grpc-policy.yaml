@@ -1,0 +1,37 @@
+# Non-applied promotion template. Run validate-istio-grpc.sh and gRPC smoke
+# tests before applying this policy in an environment-specific overlay.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc
+  namespace: storemesh-user-service
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc
+  namespace: storemesh-product-service
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc
+  namespace: storemesh-inventory-service
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc
+  namespace: storemesh-order-service
+spec:
+  mtls:
+    mode: STRICT
