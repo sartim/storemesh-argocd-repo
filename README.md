@@ -109,10 +109,13 @@ an ExternalSecret-backed Kubernetes Secret before enabling the Fluent Bit
 chart. The filters remove common password, token, and authorization fields;
 extend the redaction policy for application-specific sensitive fields.
 
-Istio is represented by separate, opt-in `base` and `istiod` applications,
-pinned to `1.30.3`. These install the mesh control plane only; sidecar
-injection, gateways, mTLS policy, and telemetry providers require a separate
-environment review before workloads are enrolled.
+Istio is represented by separate, opt-in `base`, `istiod`, ingress-gateway, and
+mesh-policy applications, pinned to `1.30.3`. The User, Product, Inventory,
+Order, BFF, and frontend namespaces are labeled for sidecar injection when
+their applications are synchronized. The mesh policy starts in `PERMISSIVE`
+mode so existing direct gRPC traffic remains compatible during validation;
+promote deliberately to `STRICT` only after every participating workload has a
+healthy sidecar and mTLS telemetry has been verified.
 
 `examples/istio-mesh-policy.yaml` is a non-applied migration template. Start
 with `PERMISSIVE` mode while sidecars and the Tempo provider are validated,

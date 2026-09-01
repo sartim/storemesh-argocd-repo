@@ -1,0 +1,35 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc-migration
+  namespace: storemesh-user-service
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc-migration
+  namespace: storemesh-product-service
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc-migration
+  namespace: storemesh-inventory-service
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-grpc-migration
+  namespace: storemesh-order-service
+spec:
+  mtls:
+    mode: PERMISSIVE

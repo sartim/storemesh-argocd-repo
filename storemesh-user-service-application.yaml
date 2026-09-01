@@ -36,6 +36,9 @@ spec:
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground
       - ServerSideApply=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
     retry:
       limit: 3
       backoff:
