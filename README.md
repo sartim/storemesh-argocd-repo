@@ -54,10 +54,22 @@ Declare environment-specific Elasticsearch and Kibana resources only after
 the operator is healthy. Configure persistent storage, retention, credentials,
 network policy, and backups before sending production logs.
 
-`examples/eck-logging-stack.yaml` is a deliberately non-applied starting
-template. Replace its Elastic Stack version and storage class, then review
-replica sizing, retention, TLS, and backup settings for the target environment
-before applying it.
+The local bootstrap also submits `eck-logging-application.yaml`, which applies
+the ECK-managed one-node Elasticsearch/Kibana stack in `storemesh-logging`.
+`manifests/eck-logging/stack.yaml` is intentionally small for Kind and uses
+ECK's generated TLS and `elastic` credentials. Increase replicas, storage,
+retention, and backup settings before using it in a shared or production
+environment. `examples/eck-logging-stack.yaml` remains the environment-specific
+template for that review.
+
+`fluent-bit-application.yaml` deploys a local DaemonSet after the ECK stack and
+sends redacted container logs to the ECK Elasticsearch service. TLS verification
+is disabled only for this temporary local Kind setup; use the ECK CA secret and
+an ExternalSecret-backed credential in shared environments.
+
+Kiali is installed through its operator application and is configured for
+anonymous local access only. It observes Istio and Prometheus and should be
+protected with an approved authentication strategy outside local testing.
 
 The Prometheus Operator-compatible stack is an explicitly applied, opt-in
 application pinned to `kube-prometheus-stack` `88.5.4`:

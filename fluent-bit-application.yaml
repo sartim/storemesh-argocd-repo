@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluent-bit
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/part-of: storemesh-platform
+    storemesh.io/optional: "true"
+spec:
+  project: storemesh
+  source:
+    repoURL: https://fluent.github.io/helm-charts
+    chart: fluent-bit
+    targetRevision: 0.58.1
+    helm:
+      values: |
+        kind: DaemonSet
+        env:
+        - name: ELASTIC_USERNAME
+          value: elastic
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: storemesh-logs-es-elastic-user
+              key: elastic
+        config:
+          filters: |
+            [FILTER]
+                Name kubernetes
+                Match kube.*
+                Merge_Log On
+                Keep_Log Off
+                K8S-Logging.Parser On
+                K8S-Logging.Exclude On
+            [FILTER]
+                Name modify
+                Match kube.*
+                Remove log.password
+                Remove log.token
+                Remove log.authorization
+          outputs: |
+            [OUTPUT]
+                Name es
+                Match kube.*
+                Host storemesh-logs-es-http.storemesh-logging.svc.cluster.local
+                Port 9200
+                TLS On
+                TLS.Verify Off
+                HTTP_User ${ELASTIC_USERNAME}
+                HTTP_Passwd ${ELASTIC_PASSWORD}
+                Logstash_Format On
+                Retry_Limit False
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true

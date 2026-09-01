@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kiali
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app.kubernetes.io/part-of: storemesh-platform
+    storemesh.io/optional: "true"
+spec:
+  project: storemesh
+  source:
+    repoURL: https://kiali.org/helm-charts
+    chart: kiali-operator
+    targetRevision: 2.31.0
+    helm:
+      values: |
+        watchNamespace: ""
+        clusterRoleCreator: true
+        allowAllAccessibleNamespaces: true
+        cr:
+          create: true
+          namespace: istio-system
+          name: kiali
+          spec:
+            auth:
+              strategy: anonymous
+            deployment:
+              cluster_wide_access: true
+            external_services:
+              prometheus:
+                url: http://prometheus-stack-kube-prom-prometheus.storemesh-monitoring.svc.cluster.local:9090
+              grafana:
+                internal_url: http://prometheus-stack-grafana.storemesh-monitoring.svc.cluster.local
+                external_url: http://localhost:3001
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true

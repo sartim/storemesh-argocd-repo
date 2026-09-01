@@ -1,30 +1,32 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: eck-operator
+  name: eck-logging
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "1"
   labels:
     app.kubernetes.io/part-of: storemesh-platform
     storemesh.io/optional: "true"
 spec:
   project: storemesh
   source:
-    repoURL: https://helm.elastic.co
-    chart: eck-operator
-    targetRevision: 3.4.1
-    helm:
-      values: |
-        installCRDs: true
-        managedNamespaces: []
+    repoURL: https://github.com/sartim/storemesh-argocd-repo
+    targetRevision: main
+    path: manifests/eck-logging
   destination:
     server: https://kubernetes.default.svc
-    namespace: elastic-system
+    namespace: storemesh-logging
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
     syncOptions:
     - CreateNamespace=true
     - ServerSideApply=true
