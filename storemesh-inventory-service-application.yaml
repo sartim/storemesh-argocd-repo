@@ -11,6 +11,7 @@ spec:
     path: storemesh-inventory-service
     helm:
       values: |
+        replicaCount: 1
         serviceMonitor:
           enabled: true
   destination:

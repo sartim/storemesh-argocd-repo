@@ -11,6 +11,9 @@ spec:
     repoURL: https://github.com/sartim/storemesh-helm-repo
     targetRevision: main
     path: storemesh-bff
+    helm:
+      values: |
+        replicaCount: 1
   destination:
     server: https://kubernetes.default.svc
     namespace: storemesh-bff

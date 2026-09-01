@@ -21,6 +21,7 @@ spec:
         - name: secrets.existingSecret
           value: storemesh-user-service-secrets
       values: |
+        replicaCount: 1
         serviceMonitor:
           enabled: true
 

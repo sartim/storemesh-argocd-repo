@@ -13,6 +13,7 @@ spec:
     path: storemesh-product-service
     helm:
       values: |
+        replicaCount: 1
         serviceMonitor:
           enabled: true
   destination:

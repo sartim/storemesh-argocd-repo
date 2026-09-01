@@ -11,6 +11,7 @@ spec:
     path: storemesh-order-service
     helm:
       values: |
+        replicaCount: 1
         serviceMonitor:
           enabled: true
   destination:
