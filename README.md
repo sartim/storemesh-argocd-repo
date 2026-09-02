@@ -103,6 +103,21 @@ It exposes OTLP gRPC and HTTP receivers internally and uses a persistent local
 volume by default. Production environments should replace the storage backend,
 retention, sizing, and access policy with approved environment values.
 
+The self-hosted Flagsmith application is also explicitly opt-in. It uses the
+official Flagsmith chart pinned to `0.83.0`, a disposable internal PostgreSQL
+dependency, and no ingress by default:
+
+```sh
+kubectl apply -f storemesh-flagsmith-application.yaml
+```
+
+After the Flagsmith bootstrap job creates the local project, create a
+server-side environment key in the Flagsmith UI and store it in a Kubernetes
+Secret. Enable the BFF chart's `flagsmith.enabled` setting and reference that
+Secret. Flagsmith is not required for cluster bootstrap because the BFF uses
+safe defaults when no key is configured. Use persistent storage, external
+PostgreSQL, TLS, and protected administration before shared-environment use.
+
 `examples/fluent-bit-eck-values.yaml` provides the non-applied Fluent Bit
 pipeline template. Replace the ECK service hostname and inject credentials from
 an ExternalSecret-backed Kubernetes Secret before enabling the Fluent Bit

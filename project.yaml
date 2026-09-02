@@ -15,6 +15,7 @@ spec:
     - "https://kiali.org/helm-charts"
     - "https://fluent.github.io/helm-charts"
     - "https://istio-release.storage.googleapis.com/charts"
+    - "https://flagsmith.github.io/flagsmith-charts"
     - "https://github.com/sartim/storemesh-argocd-repo"
 
   destinations:
@@ -59,6 +60,8 @@ spec:
     - namespace: "istio-system"
       server: https://kubernetes.default.svc
     - namespace: "istio-ingress"
+      server: https://kubernetes.default.svc
+    - namespace: "storemesh-flagsmith"
       server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:

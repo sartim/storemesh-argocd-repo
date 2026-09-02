@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storemesh-flagsmith
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: storemesh-platform
+    storemesh.io/optional: "true"
+spec:
+  project: storemesh
+  source:
+    repoURL: https://flagsmith.github.io/flagsmith-charts
+    chart: flagsmith
+    targetRevision: 0.83.0
+    helm:
+      values: |
+        api:
+          replicacount: 1
+          separateApiAndFrontend: true
+          bootstrap:
+            enabled: true
+            adminEmail: admin@storemesh.local
+            organisationName: StoreMesh
+            projectName: StoreMesh Runtime Flags
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+        frontend:
+          enabled: true
+          replicacount: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 512Mi
+        devPostgresql:
+          enabled: true
+        prometheus:
+          enabled: false
+        hpa:
+          api:
+            enabled: false
+          taskProcessor:
+            enabled: false
+          sse:
+            enabled: false
+        ingress:
+          api:
+            enabled: false
+          frontend:
+            enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storemesh-flagsmith
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
