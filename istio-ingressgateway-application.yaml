@@ -15,6 +15,8 @@ spec:
       values: |
         service:
           type: LoadBalancer
+        podAnnotations:
+          sidecar.istio.io/proxyImage: docker.io/istio/proxyv2:1.30.3
         global:
           hub: docker.io/istio
           tag: 1.30.3
