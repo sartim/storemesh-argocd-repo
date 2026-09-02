@@ -3,8 +3,6 @@ kind: Elasticsearch
 metadata:
   name: storemesh-logs
   namespace: storemesh-logging
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   version: 9.2.3
   nodeSets:
@@ -38,8 +36,6 @@ kind: Kibana
 metadata:
   name: storemesh-logs
   namespace: storemesh-logging
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   version: 9.2.3
   count: 1
