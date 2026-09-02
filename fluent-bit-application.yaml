@@ -51,6 +51,7 @@ spec:
                 HTTP_User ${ELASTIC_USERNAME}
                 HTTP_Passwd ${ELASTIC_PASSWORD}
                 Logstash_Format On
+                Suppress_Type_Name On
                 Retry_Limit False
   destination:
     server: https://kubernetes.default.svc
