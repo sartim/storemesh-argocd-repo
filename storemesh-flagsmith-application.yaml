@@ -17,6 +17,10 @@ spec:
         api:
           replicacount: 1
           separateApiAndFrontend: true
+          secretKeyFromExistingSecret:
+            enabled: true
+            name: storemesh-flagsmith-django-secret-key
+            key: django-secret-key
           bootstrap:
             enabled: true
             adminEmail: admin@storemesh.local
