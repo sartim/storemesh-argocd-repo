@@ -19,6 +19,12 @@ spec:
         grafana:
           enabled: true
         prometheusOperator:
+          admissionWebhooks:
+            patch:
+              image:
+                registry: registry.k8s.io
+                repository: ingress-nginx/kube-webhook-certgen
+                tag: v1.4.4
           resources:
             requests:
               cpu: 100m
