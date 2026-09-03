@@ -9,11 +9,10 @@ spec:
   project: storemesh
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
-    chart: gateway
+      chart: gateway
     targetRevision: 1.30.3
     helm:
       values: |
-        image: docker.io/istio/proxyv2:1.30.3
         service:
           type: LoadBalancer
         podAnnotations:
