@@ -29,9 +29,9 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 512Mi
+              memory: 768Mi
             limits:
-              memory: 512Mi
+              memory: 768Mi
         frontend:
           enabled: true
           replicacount: 1
