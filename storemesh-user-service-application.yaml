@@ -22,6 +22,12 @@ spec:
           value: storemesh-user-service-secrets
       values: |
         replicaCount: 1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 128Mi
         serviceMonitor:
           enabled: true
 
