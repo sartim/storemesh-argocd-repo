@@ -22,7 +22,7 @@ spec:
               cpu: 500m
               memory: 1Gi
             limits:
-              memory: 2Gi
+              memory: 1Gi
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data
@@ -53,4 +53,4 @@ spec:
             cpu: 250m
             memory: 512Mi
           limits:
-            memory: 1Gi
+            memory: 512Mi
