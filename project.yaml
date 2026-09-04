@@ -63,6 +63,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: "storemesh-flagsmith"
       server: https://kubernetes.default.svc
+    - namespace: "storemesh-keycloak"
+      server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
     - group: ""

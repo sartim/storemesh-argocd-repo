@@ -80,6 +80,19 @@ URLs in Keycloak, and verify group-to-role mappings before removing local
 fallback access. Kiali and Kibana require the same explicit tool-specific
 activation process.
 
+`storemesh-keycloak-application.yaml` is the matching opt-in Argo CD
+Application. It is deliberately not submitted by the default local bootstrap.
+To enable it, create the admin Secret out of band and apply the Application:
+
+```sh
+kubectl create namespace storemesh-keycloak --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n storemesh-keycloak create secret generic storemesh-keycloak-admin \
+  --from-literal=password="$KEYCLOAK_ADMIN_PASSWORD"
+kubectl apply -f storemesh-keycloak-application.yaml
+```
+
+Wait for Keycloak readiness before applying the service OIDC values example.
+
 The BFF, Product, Order, and Inventory applications expose explicit
 `config.keycloakIssuer` and `config.keycloakAudience` Helm values. They are
 empty by default so the local smoke deployment does not depend on the
