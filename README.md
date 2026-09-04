@@ -80,6 +80,16 @@ URLs in Keycloak, and verify group-to-role mappings before removing local
 fallback access. Kiali and Kibana require the same explicit tool-specific
 activation process.
 
+The BFF, Product, Order, and Inventory applications expose explicit
+`config.keycloakIssuer` and `config.keycloakAudience` Helm values. They are
+empty by default so the local smoke deployment does not depend on the
+optional Keycloak chart. After installing Keycloak and confirming its realm is
+healthy, apply the values in
+`examples/service-keycloak-oidc-values.yaml` to each application, using the
+actual Keycloak namespace. The issuer must exactly match the token `iss`
+claim; do not configure an internal cluster issuer while clients are obtaining
+tokens from a different external issuer.
+
 The Prometheus Operator-compatible stack is an explicitly applied, opt-in
 application pinned to `kube-prometheus-stack` `88.5.4`:
 

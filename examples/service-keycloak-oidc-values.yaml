@@ -1,0 +1,15 @@
+# Apply these values to the BFF, Product, Order, and Inventory Argo
+# Applications after the storemesh-keycloak chart is installed and healthy.
+# The issuer must match the `iss` claim in the token exactly. Keep the same
+# issuer and audience across BFF and downstream services.
+#
+# Example internal cluster issuer:
+# http://storemesh-keycloak.<keycloak-namespace>.svc.cluster.local:8080/realms/storemesh
+
+config:
+  keycloakIssuer: http://storemesh-keycloak.<keycloak-namespace>.svc.cluster.local:8080/realms/storemesh
+  keycloakAudience: storemesh-bff
+
+# For local browser/mobile clients, use the externally reachable Keycloak
+# issuer configured for that client instead of this internal service URL.
+# Do not mix tokens issued by one issuer with a different configured issuer.

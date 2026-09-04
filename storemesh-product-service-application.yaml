@@ -20,7 +20,10 @@ spec:
             memory: 128Mi
           limits:
             memory: 128Mi
-        serviceMonitor:
+          config:
+            keycloakIssuer: ""
+            keycloakAudience: storemesh-bff
+          serviceMonitor:
           enabled: true
   destination:
     server: https://kubernetes.default.svc
