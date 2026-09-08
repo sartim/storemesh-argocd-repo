@@ -49,7 +49,7 @@ spec:
   mtls: { mode: STRICT }
 ---
 # ALLOW rules make each selected namespace default-deny, then authorize only
-# the callers required by the StoreMesh request graph.
+# the workload identities required by the StoreMesh request graph.
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
@@ -57,7 +57,9 @@ metadata:
   namespace: storemesh-user-service
 spec:
   rules:
-    - from: [{ source: { namespaces: [storemesh-bff] } }]
+    - from:
+        - source:
+            principals: [cluster.local/ns/storemesh-bff/sa/default]
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -66,7 +68,11 @@ metadata:
   namespace: storemesh-product-service
 spec:
   rules:
-    - from: [{ source: { namespaces: [storemesh-bff, storemesh-order-service] } }]
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/storemesh-bff/sa/default
+              - cluster.local/ns/storemesh-order-service/sa/default
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -75,7 +81,11 @@ metadata:
   namespace: storemesh-inventory-service
 spec:
   rules:
-    - from: [{ source: { namespaces: [storemesh-bff, storemesh-order-service] } }]
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/storemesh-bff/sa/default
+              - cluster.local/ns/storemesh-order-service/sa/default
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -84,7 +94,9 @@ metadata:
   namespace: storemesh-order-service
 spec:
   rules:
-    - from: [{ source: { namespaces: [storemesh-bff] } }]
+    - from:
+        - source:
+            principals: [cluster.local/ns/storemesh-bff/sa/default]
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -93,7 +105,11 @@ metadata:
   namespace: storemesh-bff
 spec:
   rules:
-    - from: [{ source: { namespaces: [istio-ingress, storemesh-frontend] } }]
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/istio-ingress/sa/istio-ingressgateway-service-account
+              - cluster.local/ns/storemesh-frontend/sa/default
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -102,4 +118,6 @@ metadata:
   namespace: storemesh-frontend
 spec:
   rules:
-    - from: [{ source: { namespaces: [istio-ingress] } }]
+    - from:
+        - source:
+            principals: [cluster.local/ns/istio-ingress/sa/istio-ingressgateway-service-account]
