@@ -1,0 +1,94 @@
+# Production overlay template. Do not apply unchanged: replace the hostname,
+# TLS Secret, and Keycloak issuer/JWKS URL for the target environment.
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: storemesh-edge
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https-storemesh
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: storemesh-edge-tls
+      hosts: [storemesh.example.com]
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: storemesh-edge
+  namespace: istio-ingress
+spec:
+  hosts: [storemesh.example.com]
+  gateways: [storemesh-edge]
+  http:
+    - match:
+        - uri: { prefix: /api/ }
+        - uri: { prefix: /graphql }
+      route:
+        - destination:
+            host: storemesh-bff.storemesh-bff.svc.cluster.local
+            port: { number: 8080 }
+      timeout: 15s
+    - route:
+        - destination:
+            host: storemesh-frontend.storemesh-frontend.svc.cluster.local
+            port: { number: 3000 }
+      timeout: 15s
+---
+# Login and health remain public; protected BFF API and GraphQL paths require
+# a valid Keycloak access token.
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: storemesh-keycloak
+  namespace: storemesh-bff
+spec:
+  selector:
+    matchLabels: { app.kubernetes.io/name: storemesh-bff }
+  jwtRules:
+    - issuer: https://keycloak.example.com/realms/storemesh
+      jwksUri: https://keycloak.example.com/realms/storemesh/protocol/openid-connect/certs
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-missing-keycloak-api-token
+  namespace: storemesh-bff
+spec:
+  selector:
+    matchLabels: { app.kubernetes.io/name: storemesh-bff }
+  action: DENY
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/istio-ingress/sa/istio-ingressgateway-service-account]
+      to:
+        - operation:
+            paths: ["/api/*", "/graphql"]
+      when:
+        - key: request.auth.principal
+          notValues: ["*"]
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: storemesh-bff-resilience
+  namespace: istio-ingress
+spec:
+  host: storemesh-bff.storemesh-bff.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 20
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 10s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50

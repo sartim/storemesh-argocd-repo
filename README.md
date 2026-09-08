@@ -163,3 +163,10 @@ that do not install Istio can omit it. `examples/istio-mesh-policy.yaml` and
 environment overlays. Production overlays should replace namespace-level
 allows with service-account principals and add JWT `RequestAuthentication`
 where gateway-level token validation is desired.
+
+`examples/istio-production-edge.yaml` is the non-applied production edge
+template. It provides HTTPS Gateway routing, Keycloak JWT validation for
+protected BFF API/GraphQL paths, and conservative BFF connection-pool/outlier
+settings. Replace the example hostname, TLS credential, issuer, and JWKS URL
+before applying it through an environment overlay. Login and health endpoints
+remain public so clients can obtain a token and Kubernetes can probe the BFF.
