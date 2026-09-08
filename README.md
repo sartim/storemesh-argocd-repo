@@ -147,18 +147,19 @@ an ExternalSecret-backed Kubernetes Secret before enabling the Fluent Bit
 chart. The filters remove common password, token, and authorization fields;
 extend the redaction policy for application-specific sensitive fields.
 
-Istio is represented by separate, opt-in `base`, `istiod`, ingress-gateway, and
+Istio is represented by separate `base`, `istiod`, ingress-gateway, and
 mesh-policy applications, pinned to `1.30.3`. The User, Product, Inventory,
-Order, BFF, and frontend namespaces are labeled for sidecar injection when
-their applications are synchronized. The mesh policy starts in `PERMISSIVE`
-mode so existing direct gRPC traffic remains compatible during validation;
-promote deliberately to `STRICT` only after every participating workload has a
-healthy sidecar and mTLS telemetry has been verified.
+Order, BFF, and frontend namespaces are labeled for sidecar injection before
+their applications are synchronized. The applied mesh policy uses `STRICT`
+workload mTLS for all six namespaces and adds namespace-scoped
+`AuthorizationPolicy` rules for the StoreMesh request graph. This is fully
+testable on Kind; the bootstrap script waits for the injector before creating
+workloads and `scripts/validate-istio-grpc.sh` verifies sidecars, strict mTLS,
+and authorization policies.
 
-`examples/istio-mesh-policy.yaml` is a non-applied migration template. Start
-with `PERMISSIVE` mode while sidecars and the Tempo provider are validated,
-then promote to `STRICT` in an environment-specific policy after approved
-workloads are enrolled. Repeat the policy for each namespace deliberately;
-there is no cluster-wide enrollment in this repository.
-The `examples/istio-strict-grpc-policy.yaml` file is the corresponding
-non-applied promotion template for the four domain-service namespaces.
+The policy application remains an explicit platform component so environments
+that do not install Istio can omit it. `examples/istio-mesh-policy.yaml` and
+`examples/istio-strict-grpc-policy.yaml` remain reference templates for
+environment overlays. Production overlays should replace namespace-level
+allows with service-account principals and add JWT `RequestAuthentication`
+where gateway-level token validation is desired.

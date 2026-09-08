@@ -1,0 +1,24 @@
+name: Argo CD manifest validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate platform manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML documents
+        run: ruby -e 'require "yaml"; Dir["**/*.yaml", "**/*.yml"].reject { |path| path.start_with?("third_party/") }.each { |path| YAML.load_stream(File.read(path)); puts "valid: #{path}" }'
+
+      - name: Validate Istio policy contract
+        run: ruby scripts/validate-istio-policy.rb

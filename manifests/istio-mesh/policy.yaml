@@ -1,35 +1,105 @@
+# StoreMesh service-mesh baseline. All approved application namespaces use
+# STRICT workload mTLS after bootstrap has enrolled their sidecars.
 apiVersion: security.istio.io/v1
 kind: PeerAuthentication
 metadata:
-  name: storemesh-grpc-migration
+  name: storemesh-mtls
   namespace: storemesh-user-service
 spec:
-  mtls:
-    mode: PERMISSIVE
+  mtls: { mode: STRICT }
 ---
 apiVersion: security.istio.io/v1
 kind: PeerAuthentication
 metadata:
-  name: storemesh-grpc-migration
+  name: storemesh-mtls
   namespace: storemesh-product-service
 spec:
-  mtls:
-    mode: PERMISSIVE
+  mtls: { mode: STRICT }
 ---
 apiVersion: security.istio.io/v1
 kind: PeerAuthentication
 metadata:
-  name: storemesh-grpc-migration
+  name: storemesh-mtls
   namespace: storemesh-inventory-service
 spec:
-  mtls:
-    mode: PERMISSIVE
+  mtls: { mode: STRICT }
 ---
 apiVersion: security.istio.io/v1
 kind: PeerAuthentication
 metadata:
-  name: storemesh-grpc-migration
+  name: storemesh-mtls
   namespace: storemesh-order-service
 spec:
-  mtls:
-    mode: PERMISSIVE
+  mtls: { mode: STRICT }
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-mtls
+  namespace: storemesh-bff
+spec:
+  mtls: { mode: STRICT }
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: storemesh-mtls
+  namespace: storemesh-frontend
+spec:
+  mtls: { mode: STRICT }
+---
+# ALLOW rules make each selected namespace default-deny, then authorize only
+# the callers required by the StoreMesh request graph.
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-bff
+  namespace: storemesh-user-service
+spec:
+  rules:
+    - from: [{ source: { namespaces: [storemesh-bff] } }]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-bff-and-order
+  namespace: storemesh-product-service
+spec:
+  rules:
+    - from: [{ source: { namespaces: [storemesh-bff, storemesh-order-service] } }]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-bff-and-order
+  namespace: storemesh-inventory-service
+spec:
+  rules:
+    - from: [{ source: { namespaces: [storemesh-bff, storemesh-order-service] } }]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-bff
+  namespace: storemesh-order-service
+spec:
+  rules:
+    - from: [{ source: { namespaces: [storemesh-bff] } }]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-ingress-and-frontend
+  namespace: storemesh-bff
+spec:
+  rules:
+    - from: [{ source: { namespaces: [istio-ingress, storemesh-frontend] } }]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-storemesh-ingress
+  namespace: storemesh-frontend
+spec:
+  rules:
+    - from: [{ source: { namespaces: [istio-ingress] } }]
