@@ -1,0 +1,16 @@
+# Non-applied example. Merge into kiali-application.yaml only after creating
+# the confidential client Secret and replacing the issuer/callback values.
+# Kiali keeps its Kubernetes RBAC model; OIDC provides the user sign-in.
+cr:
+  spec:
+    auth:
+      strategy: openid
+      openid:
+        issuer_uri: http://localhost:8081/realms/storemesh
+        client_id: kiali
+        client_secret: CHANGE_ME_OUT_OF_BAND
+        scopes:
+        - openid
+        - profile
+        - email
+        - groups

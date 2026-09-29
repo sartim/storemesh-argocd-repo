@@ -13,6 +13,8 @@ grafana:
       auth_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/auth
       token_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/token
       api_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/userinfo
+      # Keycloak maps realm roles to the groups claim for platform clients.
+      # Keep the admin mapping narrow; all other authenticated users are viewers.
       role_attribute_path: contains(groups[*], 'observability-admin') && 'Admin' || 'Viewer'
   envFromSecret: storemesh-grafana-keycloak
 

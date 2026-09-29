@@ -16,6 +16,11 @@ metadata:
   namespace: argocd
 data:
   url: https://localhost:8443
+  policy.default: role:readonly
+  policy.csv: |
+    g, admin, role:admin
+    g, observability-admin, role:readonly
+    g, operator, role:readonly
   oidc.config: |
     name: Keycloak
     issuer: http://localhost:8081/realms/storemesh

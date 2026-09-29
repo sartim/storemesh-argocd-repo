@@ -1,0 +1,27 @@
+# Non-applied ECK example. Configure the Elasticsearch OIDC realm and Kibana
+# provider together. Store the client secret in an ECK secure-settings Secret;
+# never commit it in this file.
+elasticsearch:
+  spec:
+    secureSettings:
+    - secretName: storemesh-kibana-keycloak
+    config:
+      xpack.security.authc.realms.oidc.oidc1.order: "2"
+      xpack.security.authc.realms.oidc.oidc1.rp.client_id: kibana
+      xpack.security.authc.realms.oidc.oidc1.rp.response_type: code
+      xpack.security.authc.realms.oidc.oidc1.rp.redirect_uri: http://localhost:5601/api/security/oidc/callback
+      xpack.security.authc.realms.oidc.oidc1.op.issuer: http://localhost:8081/realms/storemesh
+      xpack.security.authc.realms.oidc.oidc1.op.authorization_endpoint: http://localhost:8081/realms/storemesh/protocol/openid-connect/auth
+      xpack.security.authc.realms.oidc.oidc1.op.token_endpoint: http://localhost:8081/realms/storemesh/protocol/openid-connect/token
+      xpack.security.authc.realms.oidc.oidc1.op.jwkset_path: http://localhost:8081/realms/storemesh/protocol/openid-connect/certs
+      xpack.security.authc.realms.oidc.oidc1.op.userinfo_endpoint: http://localhost:8081/realms/storemesh/protocol/openid-connect/userinfo
+      xpack.security.authc.realms.oidc.oidc1.claims.principal: preferred_username
+kibana:
+  config:
+    xpack.security.authc.providers:
+      basic.basic1.order: 0
+      oidc.oidc1.order: 1
+      oidc.oidc1.realm: oidc1
+
+# The secure-settings Secret should contain this key out of band:
+# xpack.security.authc.realms.oidc.oidc1.rp.client_secret: <secret>

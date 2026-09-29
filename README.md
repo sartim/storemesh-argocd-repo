@@ -77,8 +77,12 @@ Non-applied OIDC examples for Grafana and Argo CD are in
 must be adapted for the environment: create confidential-client Secrets out
 of band, use an issuer reachable by the server, register exact HTTPS callback
 URLs in Keycloak, and verify group-to-role mappings before removing local
-fallback access. Kiali and Kibana require the same explicit tool-specific
-activation process.
+fallback access. Kiali and Kibana have matching non-applied examples in
+`examples/kiali-keycloak-values.yaml` and `examples/kibana-keycloak-values.yaml`.
+The local Keycloak realm maps realm roles to a `groups` claim for platform
+clients. The baseline is `admin` for Argo CD administration,
+`observability-admin` for Grafana administration, and `operator` or other
+authenticated users as read-only users. Review each tool's RBAC before applying.
 
 `storemesh-keycloak-application.yaml` is the matching opt-in Argo CD
 Application. It is deliberately not submitted by the default local bootstrap.
