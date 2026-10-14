@@ -1,5 +1,6 @@
 # Non-applied example. Apply only after the Keycloak issuer is reachable from
-# the Argo CD server and the Secret has been created in namespace argocd.
+# both the browser and Argo CD server, and after creating the Secret in
+# namespace argocd. Register https://<argocd-host>/auth/callback exactly.
 apiVersion: v1
 kind: Secret
 metadata:
@@ -23,7 +24,7 @@ data:
     g, operator, role:readonly
   oidc.config: |
     name: Keycloak
-    issuer: http://localhost:8081/realms/storemesh
+    issuer: https://keycloak.example.com/realms/storemesh
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]

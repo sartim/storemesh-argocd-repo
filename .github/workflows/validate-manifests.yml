@@ -20,5 +20,7 @@ jobs:
       run: |
         ruby -e 'require "yaml"; ARGV.each { |file| YAML.load_stream(File.read(file)); puts "ok #{file}" }' \
           $(find . -type f \( -name "*.yaml" -o -name "*.yml" \) -not -path "./.git/*")
+    - name: Validate platform OIDC role examples
+      run: ruby scripts/validate-platform-oidc.rb
     - name: Check whitespace
       run: git diff --check

@@ -1,5 +1,6 @@
-# Non-applied example. Merge into prometheus-stack-application.yaml only after
-# creating the Secret in the storemesh-monitoring namespace.
+# Non-applied example. Replace the shared issuer placeholder and public
+# Grafana root URL. The issuer must resolve from both browser and Grafana pod.
+# Merge only after creating the Secret in storemesh-monitoring.
 grafana:
   grafana.ini:
     server:
@@ -7,14 +8,17 @@ grafana:
     auth.generic_oauth:
       enabled: true
       name: Keycloak
-      allow_sign_up: false
+      allow_sign_up: true
       client_id: grafana
       scopes: openid profile email groups
-      auth_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/auth
-      token_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/token
-      api_url: http://localhost:8081/realms/storemesh/protocol/openid-connect/userinfo
+      auth_url: https://keycloak.example.com/realms/storemesh/protocol/openid-connect/auth
+      token_url: https://keycloak.example.com/realms/storemesh/protocol/openid-connect/token
+      api_url: https://keycloak.example.com/realms/storemesh/protocol/openid-connect/userinfo
       # Keycloak maps realm roles to the groups claim for platform clients.
-      # Keep the admin mapping narrow; all other authenticated users are viewers.
+      groups_attribute_path: groups
+      allowed_groups: observability-admin operator
+      role_attribute_strict: true
+      # Restrict Grafana org-admin to the dedicated observability-admin role.
       role_attribute_path: contains(groups[*], 'observability-admin') && 'Admin' || 'Viewer'
   envFromSecret: storemesh-grafana-keycloak
 

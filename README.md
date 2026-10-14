@@ -77,12 +77,29 @@ Non-applied OIDC examples for Grafana and Argo CD are in
 must be adapted for the environment: create confidential-client Secrets out
 of band, use an issuer reachable by the server, register exact HTTPS callback
 URLs in Keycloak, and verify group-to-role mappings before removing local
-fallback access. Kiali and Kibana have matching non-applied examples in
-`examples/kiali-keycloak-values.yaml` and `examples/kibana-keycloak-values.yaml`.
-The local Keycloak realm maps realm roles to a `groups` claim for platform
-clients. The baseline is `admin` for Argo CD administration,
-`observability-admin` for Grafana administration, and `operator` or other
-authenticated users as read-only users. Review each tool's RBAC before applying.
+fallback access. Grafana allows only the `observability-admin` and `operator`
+realm roles, maps the former to Grafana organization Admin and the latter to
+Viewer, and rejects users without a recognized role. Argo CD maps `admin` to
+its admin role and keeps its default role read-only.
+
+Kiali and Kibana examples are in `examples/kiali-keycloak-values.yaml` and
+`examples/kibana-keycloak-values.yaml`. Kiali's OIDC sign-in is not, by itself,
+a per-user authorization solution: per-user namespace access requires the
+Kubernetes API server (or a supported API proxy) to trust those OIDC identities
+and Kubernetes RBAC to grant least privilege. Do not set `disable_rbac: true`
+in a shared environment; Kiali documents that this gives all logged-in users
+the same cluster-wide privileges. The current Kind setup does not configure
+Kubernetes API OIDC, so Kiali Keycloak login remains a documented future
+activation, not a ready-to-enable setting. See the
+[Kiali OpenID requirements](https://kiali.io/docs/configuration/authentication/openid/).
+
+Kibana OIDC SSO requires an Elastic subscription that includes SSO and is not
+available under the free Basic license used by the default ECK setup. The
+example is gated on that license; retain the ECK-generated `elastic` account
+for current local access. The local Keycloak realm maps realm roles to a
+`groups` claim for each platform client. Register exact callback URLs, never
+wildcards, and use the same issuer URL from the browser and every server-side
+OIDC client; localhost port-forward URLs are not reachable from pods.
 
 `storemesh-keycloak-application.yaml` is the matching opt-in Argo CD
 Application. It is deliberately not submitted by the default local bootstrap.

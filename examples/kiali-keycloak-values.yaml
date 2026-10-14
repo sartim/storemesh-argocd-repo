@@ -1,16 +1,27 @@
-# Non-applied example. Merge into kiali-application.yaml only after creating
-# the confidential client Secret and replacing the issuer/callback values.
-# Kiali keeps its Kubernetes RBAC model; OIDC provides the user sign-in.
+# Non-applied example. Requires Kubernetes API OIDC trust/RBAC for per-user
+# authorization; OIDC login alone is not sufficient. Use one issuer reachable
+# by both the user's browser and Kiali, and register the exact Kiali root URL.
+# See README.md before enabling this for any shared environment.
 cr:
   spec:
+    server:
+      web_fqdn: localhost
+      web_port: 20001
+      web_root: /kiali
+      web_schema: https
     auth:
       strategy: openid
       openid:
-        issuer_uri: http://localhost:8081/realms/storemesh
+        issuer_uri: https://keycloak.example.com/realms/storemesh
         client_id: kiali
-        client_secret: CHANGE_ME_OUT_OF_BAND
         scopes:
         - openid
         - profile
         - email
         - groups
+
+# Kiali reads the client secret from Secret/kiali key oidc-secret in
+# istio-system; do not place the secret in the custom resource or Git.
+# kubectl -n istio-system create secret generic kiali \
+#   --from-literal=oidc-secret="$KIALI_KEYCLOAK_CLIENT_SECRET"
+# The example issuer/host values are placeholders, not a runnable local setup.
