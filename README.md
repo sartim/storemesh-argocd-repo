@@ -102,8 +102,15 @@ wildcards, and use the same issuer URL from the browser and every server-side
 OIDC client; localhost port-forward URLs are not reachable from pods.
 
 `storemesh-keycloak-application.yaml` is the matching opt-in Argo CD
-Application. It is deliberately not submitted by the default local bootstrap.
-To enable it, create the admin Secret out of band and apply the Application:
+Application for local development and disposable tests. It is deliberately
+not submitted by the default bootstrap and must not be promoted as the shared
+or production identity provider: the chart uses Keycloak `start-dev` and a
+development realm. Shared environments should point applications at the
+issuer owned by the environment's identity operator, with its database,
+TLS, backups, and secret rotation managed outside the StoreMesh chart.
+
+To opt in to the local-only Keycloak app, create the admin Secret out of band
+and apply the Application:
 
 ```sh
 kubectl create namespace storemesh-keycloak --dry-run=client -o yaml | kubectl apply -f -
